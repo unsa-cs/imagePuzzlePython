@@ -1,5 +1,8 @@
+import os
+from PIL import Image
+from typing import Tuple
 import tkinter as tk
-from PIL import Image, ImageTk
+from PIL import ImageTk
 
 class Pixel:
   def __init__(self, x: int, y: int, image: 'SimpleImage'):
@@ -17,32 +20,39 @@ class Pixel:
   def getBlue(self) -> int:
     return self._image._pixels[self.x, self.y][2]
 
-  def setRed(self, value: int) -> None:
-    _, g, b = self._image._pixels[self.x, self.y]
-    self._image._pixels[self.x, self.y] = (value, g, b)
+  def setRed(self, x: int, y: int, value: int) -> None:
+    """Asigna el canal rojo, preservando canales restantes incluida alpha."""
+    _, g, b, *rest = self._image._pixels[x, y]
+    self._image._pixels[x, y] = (value, g, b, *rest)
 
-  def setGreen(self, value: int) -> None:
-    r, _, b = self._image._pixels[self.x, self.y]
-    self._image._pixels[self.x, self.y] = (r, value, b)
+  def setGreen(self, x: int, y: int, value: int) -> None:
+    """Asigna el canal verde, preservando canales restantes incluida alpha."""
+    r, _, b, *rest = self._image._pixels[x, y]
+    self._image._pixels[x, y] = (r, value, b, *rest)
 
-  def setBlue(self, value: int) -> None:
-    r, g, _ = self._image._pixels[self.x, self.y]
-    self._image._pixels[self.x, self.y] = (r, g, value)
+  def setBlue(self, x: int, y: int, value: int) -> None:
+    """Asigna el canal azul, preservando canales restantes incluida alpha."""
+    r, g, _, *rest = self._image._pixels[x, y]
+    self._image._pixels[x, y] = (r, g, value, *rest)
 
-  def getColor(self) -> tuple[int, int, int]:
+  def getColor(self) -> Tuple[int, ...]:
+    """Devuelve una tupla con los canales del píxel (RGB o RGBA)."""
     return self._image._pixels[self.x, self.y]
 
   def __repr__(self) -> str:
-    r, g, b = self.getColor()
-    return f"Pixel(x={self.x}, y={self.y}, r={r}, g={g}, b={b})"
+    cols = self.getColor()
+    return f"Pixel(x={self.x}, y={self.y}, color={cols})"
 
 class SimpleImage:
-  def __init__(self, filepath: str):
-    """Carga imagen desde disco y prepara píxeles."""
-    self._image = Image.open(filepath)
+  def __init__(self, filename: str):
+    """Carga la imagen ubicada en el directorio 'images' con el nombre dado."""
+    images_dir = os.path.join(os.getcwd(), 'images')
+    full_path = os.path.join(images_dir, filename)
+    self._image = Image.open(full_path)
     self._pixels = self._image.load()
 
   def save(self, outputPath: str):
+    """Guarda la imagen en la ruta indicada."""
     self._image.save(outputPath)
 
   def print(self):
@@ -59,36 +69,43 @@ class SimpleImage:
     return f"SimpleImage {self.getWidth()}×{self.getHeight()}"
 
   def getWidth(self) -> int:
+    """Ancho de la imagen en píxeles."""
     return self._image.width
 
   def getHeight(self) -> int:
+    """Alto de la imagen en píxeles."""
     return self._image.height
 
-  def getPixel(self, x: int, y: int):
+  def getPixel(self, x: int, y: int) -> Pixel:
+    """Devuelve el Pixel en la posición (x, y)."""
     return Pixel(x, y, self)
 
   def getRed(self, x: int, y: int) -> int:
+    """Devuelve el canal rojo en (x, y)."""
     return self._pixels[x, y][0]
 
   def getGreen(self, x: int, y: int) -> int:
+    """Devuelve el canal verde en (x, y)."""
     return self._pixels[x, y][1]
 
   def getBlue(self, x: int, y: int) -> int:
+    """Devuelve el canal azul en (x, y)."""
     return self._pixels[x, y][2]
 
-  def setRed(self, x: int, y: int, value: int):
-    _, g, b = self._pixels[x, y]
-    self._pixels[x, y] = (value, g, b)
+  def setRed(self, x: int, y: int, value: int) -> None:
+    """Atajo para asignar solo el canal rojo."""
+    Pixel(x, y, self).setRed(x, y, value)
 
-  def setGreen(self, x: int, y: int, value: int):
-    r, _, b = self._pixels[x, y]
-    self._pixels[x, y] = (r, value, b)
+  def setGreen(self, x: int, y: int, value: int) -> None:
+    """Atajo para asignar solo el canal verde."""
+    Pixel(x, y, self).setGreen(x, y, value)
 
-  def setBlue(self, x: int, y: int, value: int):
-    r, g, _ = self._pixels[x, y]
-    self._pixels[x, y] = (r, g, value)
+  def setBlue(self, x: int, y: int, value: int) -> None:
+    """Atajo para asignar solo el canal azul."""
+    Pixel(x, y, self).setBlue(x, y, value)
 
   def __iter__(self):
+    """Itera sobre todos los píxeles de la imagen."""
     for y in range(self.getHeight()):
       for x in range(self.getWidth()):
         yield self.getPixel(x, y)
