@@ -20,20 +20,20 @@ class Pixel:
   def getBlue(self) -> int:
     return self._image._pixels[self.x, self.y][2]
 
-  def setRed(self, x: int, y: int, value: int) -> None:
-    """Asigna el canal rojo, preservando canales restantes incluida alpha."""
-    _, g, b, *rest = self._image._pixels[x, y]
-    self._image._pixels[x, y] = (value, g, b, *rest)
+  def setRed(self, value: int) -> None:
+    """Asigna el canal rojo en este píxel, preservando canales restantes."""
+    _, g, b, *rest = self._image._pixels[self.x, self.y]
+    self._image._pixels[self.x, self.y] = (value, g, b, *rest)
 
-  def setGreen(self, x: int, y: int, value: int) -> None:
-    """Asigna el canal verde, preservando canales restantes incluida alpha."""
-    r, _, b, *rest = self._image._pixels[x, y]
-    self._image._pixels[x, y] = (r, value, b, *rest)
+  def setGreen(self, value: int) -> None:
+    """Asigna el canal verde en este píxel, preservando canales restantes."""
+    r, _, b, *rest = self._image._pixels[self.x, self.y]
+    self._image._pixels[self.x, self.y] = (r, value, b, *rest)
 
-  def setBlue(self, x: int, y: int, value: int) -> None:
-    """Asigna el canal azul, preservando canales restantes incluida alpha."""
-    r, g, _, *rest = self._image._pixels[x, y]
-    self._image._pixels[x, y] = (r, g, value, *rest)
+  def setBlue(self, value: int) -> None:
+    """Asigna el canal azul en este píxel, preservando canales restantes."""
+    r, g, _, *rest = self._image._pixels[self.x, self.y]
+    self._image._pixels[self.x, self.y] = (r, g, value, *rest)
 
   def getColor(self) -> Tuple[int, ...]:
     """Devuelve una tupla con los canales del píxel (RGB o RGBA)."""
@@ -93,19 +93,20 @@ class SimpleImage:
     return self._pixels[x, y][2]
 
   def setRed(self, x: int, y: int, value: int) -> None:
-    """Atajo para asignar solo el canal rojo."""
-    Pixel(x, y, self).setRed(x, y, value)
+    """Atajo: asigna solo el canal rojo en (x, y)."""
+    Pixel(x, y, self).setRed(value)
 
   def setGreen(self, x: int, y: int, value: int) -> None:
-    """Atajo para asignar solo el canal verde."""
-    Pixel(x, y, self).setGreen(x, y, value)
+    """Atajo: asigna solo el canal verde en (x, y)."""
+    Pixel(x, y, self).setGreen(value)
 
   def setBlue(self, x: int, y: int, value: int) -> None:
-    """Atajo para asignar solo el canal azul."""
-    Pixel(x, y, self).setBlue(x, y, value)
+    """Atajo: asigna solo el canal azul en (x, y)."""
+    Pixel(x, y, self).setBlue(value)
 
   def __iter__(self):
     """Itera sobre todos los píxeles de la imagen."""
     for y in range(self.getHeight()):
       for x in range(self.getWidth()):
         yield self.getPixel(x, y)
+
