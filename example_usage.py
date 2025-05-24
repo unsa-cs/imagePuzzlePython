@@ -2,7 +2,7 @@ from simpleImage import SimpleImage
 
 def main():
   # Carga la imagen "iron-puzzle.png"
-  img = SimpleImage("iron-puzzle.png")
+  img = SimpleImage("flowers.png")
 
   # Muestra la imagen en ventana
   img.print()
