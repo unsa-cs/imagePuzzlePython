@@ -21,7 +21,6 @@ Paquete Python para cargar y manipular imágenes píxel a píxel, inspirado en l
 simpleImage/            # Paquete principal
 ├── __init__.py         # Exporta SimpleImage y Pixel
 ├── SimpleImage.py      # Implementación de clases
-├── API_Documentation.md # Documentación de la API
 └── images/             # Carpeta con imágenes de ejemplo
     ├── flowers.jpg
     └── iron-puzzle.png
@@ -42,12 +41,19 @@ requirements.txt        # Dependencias del proyecto
    ```
 2. Instala dependencias localmente:
    ```bash
-   pip install --user -r requirements.txt
+   pip3 install --user -r requirements.txt
    ```
+
    Si lo anterior no funciona, entonces intenta esto:
 
    ```bash
-   pip install --user --break-system-packages -r requirements.txt
+   pip3 install --user --break-system-packages -r requirements.txt
+   ```
+
+   Es posible que nada de lo anterior funcione en ubuntu, por lo que se tendría que ejecutar esta línea:
+
+   ```bash
+   sudo apt install python3-pil python3-pil.imagetk
    ```
 
 ---
@@ -133,12 +139,18 @@ Asignan `value` al canal correspondiente del píxel `(x, y)`. Para imágenes con
 
 ### Clase `Pixel`
 
-#### Constructor
-```python
-Pixel(x: int, y: int, image: SimpleImage)
-```
-Crea un píxel vinculado a la coordenada `(x, y)` de la imagen.
+Los píxeles sólo serán directamente accedidos en dos casos:
+1. Cuando se itere sobre todos los pixeles de una imagen sin importar su posición en la foto.
 
+```python
+for pixel in image:
+  pixel....
+```
+2. Usando el método getPixel con las coordenadas específicas del pixel en la imagen.
+
+```python
+pixel = image.getPixel(10, 13)
+```
 #### Métodos públicos
 
 ```python
@@ -149,13 +161,11 @@ getBlue() -> int
 Devuelven el valor de cada canal del píxel.
 
 ```python
-setRed(x: int, y: int, value: int)
-setGreen(x: int, y: int, value: int)
-setBlue(x: int, y: int, value: int)
+setRed(value: int)
+setGreen(value: int)
+setBlue(value: int)
 ```
 Asignan `value` al canal correspondiente, preservando otros componentes (como alfa).
-
----
 
 ---
 
